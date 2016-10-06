@@ -1,0 +1,46 @@
+-- This file has been generated from package.yaml by hpack version 0.14.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           riak-admin-internal
+version:        0.1.0.0
+build-type:     Simple
+cabal-version:  >= 1.10
+
+library
+  hs-source-dirs:
+      src
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs OverloadedStrings RecordWildCards
+  ghc-options: -Wall
+  build-depends:
+      base
+    , monad-shell
+    , text
+    , safe-exceptions
+    , megaparsec
+  exposed-modules:
+      Riak.Admin.Command.BucketType
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs OverloadedStrings RecordWildCards
+  ghc-options: -Wall
+  build-depends:
+      base
+    , monad-shell
+    , text
+    , dlist
+    , exceptions
+    , hspec
+    , hspec-expectations
+    , mtl
+    , riak-admin-internal
+  other-modules:
+      Fixture
+      Riak.Admin.Command.BucketTypeSpec
+      Selectors
+  default-language: Haskell2010

@@ -1,0 +1,34 @@
+name: riak-admin-internal
+version: 0.1.0.0
+
+ghc-options: -Wall
+
+default-extensions:
+  - DeriveFunctor
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - OverloadedStrings
+  - RecordWildCards
+
+dependencies:
+  - base
+  - monad-shell
+  - text
+
+library:
+  source-dirs: src
+  dependencies:
+    - safe-exceptions
+    - megaparsec
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - dlist
+      - exceptions
+      - hspec
+      - hspec-expectations
+      - mtl
+      - riak-admin-internal

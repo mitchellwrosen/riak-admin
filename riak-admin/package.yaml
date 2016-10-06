@@ -1,0 +1,10 @@
+name: riak-admin
+version: 0.1.0.0
+
+ghc-options: -Wall
+
+library:
+  source-dirs: src
+  dependencies:
+    - base
+    - riak-admin-internal
