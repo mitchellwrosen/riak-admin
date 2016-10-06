@@ -7,11 +7,15 @@ default-extensions:
   - DeriveFunctor
   - GeneralizedNewtypeDeriving
   - InstanceSigs
+  - LambdaCase
   - OverloadedStrings
   - RecordWildCards
 
 dependencies:
+  - aeson >= 1.0
   - base
+  - bytestring
+  - data-default-class
   - monad-shell
   - text
 
@@ -20,6 +24,8 @@ library:
   dependencies:
     - safe-exceptions
     - megaparsec
+  other-modules:
+    Riak.Admin.Types.Internal
 
 tests:
   spec:

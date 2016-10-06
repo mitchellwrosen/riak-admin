@@ -10,16 +10,23 @@ cabal-version:  >= 1.10
 library
   hs-source-dirs:
       src
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs OverloadedStrings RecordWildCards
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RecordWildCards
   ghc-options: -Wall
   build-depends:
-      base
+      aeson >= 1.0
+    , base
+    , bytestring
+    , data-default-class
     , monad-shell
     , text
     , safe-exceptions
     , megaparsec
   exposed-modules:
       Riak.Admin.Command.BucketType
+      Riak.Admin.Types
+      Riak.Admin.Types.BucketProps
+  other-modules:
+      Riak.Admin.Types.Internal
   default-language: Haskell2010
 
 test-suite spec
@@ -27,10 +34,13 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs OverloadedStrings RecordWildCards
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RecordWildCards
   ghc-options: -Wall
   build-depends:
-      base
+      aeson >= 1.0
+    , base
+    , bytestring
+    , data-default-class
     , monad-shell
     , text
     , dlist

@@ -3,3 +3,5 @@ packages:
   - monad-shell
   - riak-admin
   - riak-admin-internal
+extra-deps:
+  - aeson-1.0.1.0

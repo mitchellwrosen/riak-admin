@@ -7,4 +7,5 @@ library:
   source-dirs: src
   dependencies:
     - base
+    - data-default-class
     - riak-admin-internal
