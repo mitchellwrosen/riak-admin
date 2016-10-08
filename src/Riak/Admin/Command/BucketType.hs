@@ -23,12 +23,12 @@ data Active
   | NotActive
   deriving (Eq, Ord, Show)
 
-bucketTypeList :: (MonadShell m, MonadThrow m) => m [(BucketType, Active)]
+bucketTypeList :: forall m. MonadShell m => m [(BucketType, Active)]
 bucketTypeList = do
   output <- shell "riak-admin bucket-type list"
   mapM parseOutput (Text.lines output)
  where
-  parseOutput :: MonadThrow m => Text -> m (BucketType, Active)
+  parseOutput :: Text -> m (BucketType, Active)
   parseOutput output =
     case runParser parser "riak-admin bucket-type list" output of
       Left err -> throw err
@@ -44,8 +44,7 @@ bucketTypeList = do
          NotActive <$ string "not active")
     pure (Text.pack typ, active)
 
-bucketTypeCreate
-  :: (MonadShell m, MonadThrow m) => BucketType -> BucketProps -> m ()
+bucketTypeCreate :: MonadShell m => BucketType -> BucketProps -> m ()
 bucketTypeCreate typ props = do
   _ <-
     shellf "riak-admin bucket-type create {} '{}'"

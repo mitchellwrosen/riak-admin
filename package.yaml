@@ -13,7 +13,6 @@ default-extensions:
   - RankNTypes
   - RecordWildCards
   - ScopedTypeVariables
-  - ViewPatterns
 
 dependencies:
   - aeson >= 1.0

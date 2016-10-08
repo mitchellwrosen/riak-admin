@@ -11,7 +11,7 @@ cabal-version:  >= 1.10
 library
   hs-source-dirs:
       src
-  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
+  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
@@ -28,7 +28,9 @@ library
     , text-format
   exposed-modules:
       Riak.Admin
+      Riak.Admin.Given
       Riak.Admin.Internal
+      Riak.Admin.With
   other-modules:
       Control.Monad.Shell
       Riak.Admin.Command.BucketType
@@ -42,7 +44,7 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
+  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0

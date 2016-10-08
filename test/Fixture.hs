@@ -18,12 +18,11 @@ import Data.DList           (DList)
 import Data.Text            (Text)
 import Lens.Micro
 import Prelude              hiding (log)
-import System.Exit          (ExitCode)
 
 import qualified Data.DList as DList
 
 data ShellDict = ShellDict
-  { _shellCode :: Text -> Shell (ExitCode, Text, Text) }
+  { _shell :: Text -> Shell Text }
 
 newtype Shell a = Shell
   { _unShell
@@ -35,10 +34,10 @@ newtype Shell a = Shell
                MonadWriter (DList Text))
 
 instance MonadShell Shell where
-  shellCode :: Text -> Shell (ExitCode, Text, Text)
-  shellCode cmd = do
+  shell :: Text -> Shell Text
+  shell cmd = do
     ShellDict{..} <- ask
-    _shellCode cmd
+    _shell cmd
 
 
 runShell :: Shell a -> ShellDict -> Either SomeException (a, [Text])

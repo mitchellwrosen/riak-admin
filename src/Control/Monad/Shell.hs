@@ -19,50 +19,28 @@ import qualified System.Process as Process
 data ShellFailure
   = ShellFailure Text Int Text Text
   -- ^ Shell command failed with non-zero exit code
-  | ShellStderr Text Text Text
-  -- ^ Shell command wrote to stderr, yet succeeded
   deriving Show
 
 instance Exception ShellFailure
 
 
-class Monad m => MonadShell m where
-  shellCode :: Text -> m (ExitCode, Text, Text)
+class MonadThrow m => MonadShell m where
+  shell :: Text -> m Text
 
-shellfCode
-  :: (Params ps, MonadShell m)
-  => Format -> ps -> m (ExitCode, Text, Text)
-shellfCode fmt ps = shellCode (LText.toStrict (format fmt ps))
-
-shellf1Code
-  :: (Buildable a, MonadShell m)
-  => Format -> a -> m (ExitCode, Text, Text)
-shellf1Code fmt x = shellfCode fmt (Only x)
-
-shell :: (MonadShell m, MonadThrow m) => Text -> m Text
-shell s = do
-  (code, out, err) <- shellCode s
-  case code of
-    ExitSuccess ->
-      if Text.null err
-        then pure out
-        else throw (ShellStderr s out err)
-    ExitFailure n -> throw (ShellFailure s n out err)
-
-shellf :: (Params ps, MonadShell m, MonadThrow m) => Format -> ps -> m Text
+shellf :: (Params ps, MonadShell m) => Format -> ps -> m Text
 shellf fmt ps = shell (LText.toStrict (format fmt ps))
 
-shellf1 :: (Buildable a, MonadShell m, MonadThrow m) => Format -> a -> m Text
+shellf1 :: (Buildable a, MonadShell m) => Format -> a -> m Text
 shellf1 fmt x = shellf fmt (Only x)
 
 
 instance MonadShell IO where
-  shellCode :: Text -> IO (ExitCode, Text, Text)
-  shellCode (Text.unpack -> cmd) = do
+  shell :: Text -> IO Text
+  shell s = do
     let acquire :: IO (Handle, Handle, ProcessHandle)
         acquire = do
           (Nothing, Just hout, Just herr, ph) <-
-            Process.createProcess ((Process.shell cmd)
+            Process.createProcess ((Process.shell (Text.unpack s))
               { Process.std_in  = Process.NoStream
               , Process.std_out = Process.CreatePipe
               , Process.std_err = Process.CreatePipe
@@ -78,4 +56,6 @@ instance MonadShell IO where
           <*> Concurrently (Text.hGetContents hout)
           <*> Concurrently (Text.hGetContents herr)
 
-    bracket acquire release action
+    bracket acquire release action >>= \case
+      (ExitSuccess, out, _) -> pure out
+      (ExitFailure n, out, err) -> throw (ShellFailure s n out err)

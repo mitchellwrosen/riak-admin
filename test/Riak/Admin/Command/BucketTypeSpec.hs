@@ -1,7 +1,6 @@
 module Riak.Admin.Command.BucketTypeSpec where
 
 import Fixture
-import Selectors
 
 import Riak.Admin.Internal
 
@@ -11,7 +10,6 @@ import Data.Default.Class
 import Data.Text          (Text)
 import Data.Typeable      (typeOf)
 import Prelude            hiding (log)
-import System.Exit
 import Test.Hspec
 
 spec :: Spec
@@ -24,11 +22,6 @@ createSpec = do
   it "calls riak-admin bucket-type create" $
     logShell (bucketTypeCreate "foo" def) logDict
       `shouldBeRight` ["riak-admin bucket-type create foo '{\"props\":{}}'"]
-
-  it "throws an exception when exit code is non-zero" $ do
-    let dict = ShellDict { _shellCode = \_ -> pure (ExitFailure 1, "", "") }
-    unShell (bucketTypeCreate "foo" def) dict
-      `shouldThrowLeft` shellFailureCode 1
 
   it "sets allow_mult" $
     logShell (bucketTypeCreate "foo" (def { allow_mult = Just True })) logDict
@@ -117,52 +110,23 @@ createSpec = do
 listSpec :: Spec
 listSpec = do
   it "calls riak-admin bucket-type list" $ do
-    let dict = ShellDict
-          { _shellCode = \s -> do
-              log s
-              pure (ExitSuccess, "", "")
-          }
-    logShell bucketTypeList dict
+    logShell bucketTypeList logDict
       `shouldBeRight` ["riak-admin bucket-type list"]
 
-  it "throws an exception when exit code is non-zero" $ do
-    let dict = ShellDict
-          { _shellCode = \_ -> do
-              pure (ExitFailure 1, "", "")
-          }
-    unShell bucketTypeList dict
-      `shouldThrowLeft` shellFailureCode 1
-
   it "parses active bucket type" $ do
-    let dict = ShellDict
-          { _shellCode = \_ -> do
-              pure (ExitSuccess, "default (active)", "")
-          }
-    unShell bucketTypeList dict
+    unShell bucketTypeList (retDict "default (active)")
       `shouldBeRight` [("default", Active)]
 
   it "parses inactive bucket type" $ do
-    let dict = ShellDict
-          { _shellCode = \_ -> do
-              pure (ExitSuccess, "default (not active)", "")
-          }
-    unShell bucketTypeList dict
+    unShell bucketTypeList (retDict "default (not active)")
       `shouldBeRight` [("default", NotActive)]
 
   it "parses a list of bucket types" $ do
-    let dict = ShellDict
-          { _shellCode = \_ -> do
-              pure (ExitSuccess, "default (active)\nfoobar (not active)", "")
-          }
-    unShell bucketTypeList dict
+    unShell bucketTypeList (retDict "default (active)\nfoobar (not active)")
       `shouldBeRight` [("default", Active), ("foobar", NotActive)]
 
   it "parses unicode bucket types" $ do
-    let dict = ShellDict
-          { _shellCode = \_ -> do
-              pure (ExitSuccess, "❤✓☀★ (active)", "")
-          }
-    unShell bucketTypeList dict
+    unShell bucketTypeList (retDict "❤✓☀★ (active)")
       `shouldBeRight` [("❤✓☀★", Active)]
 
 shouldBeRight
@@ -193,7 +157,7 @@ shouldThrowLeft e p =
 
 -- | A ShellDict that just logs its argument and succeeds.
 logDict :: ShellDict
-logDict = ShellDict { _shellCode = \s -> log s >> succeed }
+logDict = ShellDict { _shell = \s -> log s >> pure "" }
 
-succeed :: Applicative m => m (ExitCode, Text, Text)
-succeed = pure (ExitSuccess, "", "")
+retDict :: Text -> ShellDict
+retDict s = ShellDict { _shell = \_ -> pure s }
