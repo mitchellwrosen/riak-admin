@@ -1,7 +1,4 @@
 resolver: lts-7.2
-packages:
-  - monad-shell
-  - riak-admin
-  - riak-admin-internal
+packages: [.]
 extra-deps:
   - aeson-1.0.1.0

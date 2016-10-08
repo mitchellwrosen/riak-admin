@@ -2,30 +2,37 @@
 --
 -- see: https://github.com/sol/hpack
 
-name:           riak-admin-internal
+name:           riak-admin
 version:        0.1.0.0
+license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
 
 library
   hs-source-dirs:
       src
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
     , base
     , bytestring
     , data-default-class
-    , monad-shell
     , text
-    , safe-exceptions
+    , async
     , megaparsec
+    , process
+    , safe-exceptions
+    , text-format
   exposed-modules:
+      Riak.Admin
+      Riak.Admin.Given
+      Riak.Admin.Internal
+  other-modules:
+      Control.Monad.Shell
       Riak.Admin.Command.BucketType
       Riak.Admin.Types
       Riak.Admin.Types.BucketProps
-  other-modules:
       Riak.Admin.Types.Internal
   default-language: Haskell2010
 
@@ -34,14 +41,13 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
     , base
     , bytestring
     , data-default-class
-    , monad-shell
     , text
     , dlist
     , exceptions
@@ -49,7 +55,7 @@ test-suite spec
     , hspec-expectations
     , microlens
     , mtl
-    , riak-admin-internal
+    , riak-admin
   other-modules:
       Fixture
       Riak.Admin.Command.BucketTypeSpec

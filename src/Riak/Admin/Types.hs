@@ -1,9 +1,7 @@
 module Riak.Admin.Types
   ( BucketProps
   , BucketType
-  , DataType(..)
-  , FunctionName
-  , Quorum(..)
+  , module Riak.Admin.Types.Internal
   ) where
 
 import Riak.Admin.Types.BucketProps

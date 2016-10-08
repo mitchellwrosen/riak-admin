@@ -1,4 +1,4 @@
-name: riak-admin-internal
+name: riak-admin
 version: 0.1.0.0
 
 ghc-options: -Wall
@@ -12,22 +12,29 @@ default-extensions:
   - RankNTypes
   - RecordWildCards
   - ScopedTypeVariables
+  - ViewPatterns
 
 dependencies:
   - aeson >= 1.0
   - base
   - bytestring
   - data-default-class
-  - monad-shell
   - text
 
 library:
   source-dirs: src
   dependencies:
-    - safe-exceptions
+    - async
     - megaparsec
+    - process
+    - safe-exceptions
+    - text-format
   other-modules:
-    Riak.Admin.Types.Internal
+    - Control.Monad.Shell
+    - Riak.Admin.Command.BucketType
+    - Riak.Admin.Types
+    - Riak.Admin.Types.BucketProps
+    - Riak.Admin.Types.Internal
 
 tests:
   spec:
@@ -40,4 +47,4 @@ tests:
       - hspec-expectations
       - microlens
       - mtl
-      - riak-admin-internal
+      - riak-admin

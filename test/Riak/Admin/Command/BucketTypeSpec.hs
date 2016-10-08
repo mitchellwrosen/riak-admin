@@ -3,9 +3,7 @@ module Riak.Admin.Command.BucketTypeSpec where
 import Fixture
 import Selectors
 
-import Riak.Admin.Command.BucketType
-import Riak.Admin.Types
-import Riak.Admin.Types.BucketProps
+import Riak.Admin.Internal
 
 import Control.Exception
 import Control.Monad

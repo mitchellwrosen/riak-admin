@@ -1,6 +1,6 @@
 module Selectors where
 
-import Control.Monad.Shell
+import Riak.Admin.Internal
 
 import Test.Hspec.Expectations
 

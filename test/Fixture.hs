@@ -7,11 +7,12 @@ module Fixture
   , log
   ) where
 
+import Riak.Admin.Internal (MonadShell(..))
+
 import Control.Exception    (SomeException)
 import Control.Monad
 import Control.Monad.Catch
 import Control.Monad.Reader
-import Control.Monad.Shell
 import Control.Monad.Writer
 import Data.DList           (DList)
 import Data.Text            (Text)
