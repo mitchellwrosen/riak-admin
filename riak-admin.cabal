@@ -28,7 +28,6 @@ library
     , text-format
   exposed-modules:
       Riak.Admin
-      Riak.Admin.Given
       Riak.Admin.Internal
   other-modules:
       Control.Monad.Shell
