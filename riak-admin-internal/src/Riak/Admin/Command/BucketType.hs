@@ -9,6 +9,7 @@ import Riak.Admin.Types.BucketProps
 
 import Control.Exception.Safe
 import Control.Monad.Shell
+import Data.Char              (isSpace)
 import Data.Text              (Text)
 import Text.Megaparsec
 import Text.Megaparsec.Text
@@ -29,7 +30,7 @@ bucketTypeList = do
 
   parser :: Parser (BucketType, Bool)
   parser = do
-    typ <- many alphaNumChar
+    typ <- many (satisfy (not . isSpace))
     _ <- spaceChar
     active <-
       between (char '(') (char ')')

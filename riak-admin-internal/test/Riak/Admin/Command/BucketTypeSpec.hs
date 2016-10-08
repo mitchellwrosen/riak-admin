@@ -116,8 +116,6 @@ createSpec = do
     logShell (bucketTypeCreate "foo" (def { r = Just All, w = Just One })) logDict
       `shouldBeRight` ["riak-admin bucket-type create foo '{\"props\":{\"r\":\"all\",\"w\":\"one\"}}'"]
 
-
-
 listSpec :: Spec
 listSpec = do
   it "calls riak-admin bucket-type list" $ do
@@ -160,6 +158,14 @@ listSpec = do
           }
     unShell bucketTypeList dict
       `shouldBeRight` [("default", True), ("foobar", False)]
+
+  it "parses unicode bucket types" $ do
+    let dict = ShellDict
+          { _shellCode = \_ -> do
+              pure (ExitSuccess, "❤✓☀★ (active)", "")
+          }
+    unShell bucketTypeList dict
+      `shouldBeRight` [("❤✓☀★", True)]
 
 shouldBeRight
   :: (Eq a, Show a) => Either SomeException a -> a -> Expectation
