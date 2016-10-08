@@ -5,6 +5,7 @@ ghc-options: -Wall
 
 default-extensions:
   - DeriveFunctor
+  - FlexibleContexts
   - GeneralizedNewtypeDeriving
   - InstanceSigs
   - LambdaCase
@@ -19,6 +20,7 @@ dependencies:
   - base
   - bytestring
   - data-default-class
+  - exceptions
   - text
 
 library:
@@ -27,6 +29,7 @@ library:
     - async
     - megaparsec
     - process
+    - reflection
     - safe-exceptions
     - text-format
   other-modules:
@@ -42,7 +45,6 @@ tests:
     source-dirs: test
     dependencies:
       - dlist
-      - exceptions
       - hspec
       - hspec-expectations
       - microlens

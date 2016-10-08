@@ -11,17 +11,19 @@ cabal-version:  >= 1.10
 library
   hs-source-dirs:
       src
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
+  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
     , base
     , bytestring
     , data-default-class
+    , exceptions
     , text
     , async
     , megaparsec
     , process
+    , reflection
     , safe-exceptions
     , text-format
   exposed-modules:
@@ -41,16 +43,16 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
+  default-extensions: DeriveFunctor FlexibleContexts GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables ViewPatterns
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
     , base
     , bytestring
     , data-default-class
+    , exceptions
     , text
     , dlist
-    , exceptions
     , hspec
     , hspec-expectations
     , microlens
