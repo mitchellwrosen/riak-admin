@@ -7,46 +7,48 @@ module Fixture
   , log
   ) where
 
+import Control.Exception    (SomeException)
 import Control.Monad
 import Control.Monad.Catch
-import Control.Monad.RWS
+import Control.Monad.Reader
 import Control.Monad.Shell
-import Data.DList          (DList)
-import Data.Text           (Text)
-import System.Exit         (ExitCode)
-import Prelude             hiding (log)
+import Control.Monad.Writer
+import Data.DList           (DList)
+import Data.Text            (Text)
+import Lens.Micro
+import Prelude              hiding (log)
+import System.Exit          (ExitCode)
 
 import qualified Data.DList as DList
 
-data ShellDict s = ShellDict
-  { _shellCode :: Text -> Shell s (ExitCode, Text, Text) }
+data ShellDict = ShellDict
+  { _shellCode :: Text -> Shell (ExitCode, Text, Text) }
 
--- IO for throwing exceptions; does not derive MonadIO
-newtype Shell s a = Shell
-  { _unShell :: RWST (ShellDict s) (DList Text) s IO a }
-  deriving (Functor, Applicative, Monad, MonadReader (ShellDict s),
-             MonadWriter (DList Text), MonadState s, MonadThrow)
+newtype Shell a = Shell
+  { _unShell
+      :: ReaderT ShellDict
+           (WriterT (DList Text)
+             (Either SomeException))
+               a
+  } deriving (Functor, Applicative, Monad, MonadReader ShellDict, MonadThrow,
+               MonadWriter (DList Text))
 
-instance MonadShell (Shell s) where
-  shellCode :: Text -> Shell s (ExitCode, Text, Text)
+instance MonadShell Shell where
+  shellCode :: Text -> Shell (ExitCode, Text, Text)
   shellCode cmd = do
     ShellDict{..} <- ask
     _shellCode cmd
 
-runShell :: Shell s a -> ShellDict s -> s -> IO (a, s, [Text])
-runShell (Shell m) dict s = do
-  (a, s', w) <- runRWST m dict s
-  pure (a, s', DList.toList w)
 
-unShell :: Shell () a -> ShellDict () -> IO a
-unShell s dict = do
-  (a, _, _) <- runShell s dict ()
-  pure a
+runShell :: Shell a -> ShellDict -> Either SomeException (a, [Text])
+runShell s dict =
+  over (_Right . _2) DList.toList (runWriterT (runReaderT (_unShell s) dict))
 
-logShell :: Shell () a -> ShellDict () -> IO [Text]
-logShell s dict = do
-  (_, _, w) <- runShell s dict ()
-  pure w
+unShell :: Shell a -> ShellDict -> Either SomeException a
+unShell s dict = fst <$> runShell s dict
 
-log :: Text -> Shell s ()
+logShell :: Shell a -> ShellDict -> Either SomeException [Text]
+logShell s dict = snd <$> runShell s dict
+
+log :: Text -> Shell ()
 log w = tell (pure w)

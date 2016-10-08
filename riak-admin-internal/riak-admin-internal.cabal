@@ -10,7 +10,7 @@ cabal-version:  >= 1.10
 library
   hs-source-dirs:
       src
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RecordWildCards
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
@@ -34,7 +34,7 @@ test-suite spec
   main-is: Spec.hs
   hs-source-dirs:
       test
-  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RecordWildCards
+  default-extensions: DeriveFunctor GeneralizedNewtypeDeriving InstanceSigs LambdaCase OverloadedStrings RankNTypes RecordWildCards ScopedTypeVariables
   ghc-options: -Wall
   build-depends:
       aeson >= 1.0
@@ -47,6 +47,7 @@ test-suite spec
     , exceptions
     , hspec
     , hspec-expectations
+    , microlens
     , mtl
     , riak-admin-internal
   other-modules:
