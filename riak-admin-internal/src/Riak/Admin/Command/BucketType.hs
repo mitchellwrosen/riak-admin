@@ -1,5 +1,6 @@
 module Riak.Admin.Command.BucketType
   ( BucketType
+  , Active(..)
   , bucketTypeCreate
   , bucketTypeList
   ) where
@@ -17,25 +18,30 @@ import Text.Megaparsec.Text
 import qualified Data.Text               as Text
 import qualified Data.Text.Lazy.Encoding as LText
 
-bucketTypeList :: (MonadShell m, MonadThrow m) => m [(BucketType, Bool)]
+data Active
+  = Active
+  | NotActive
+  deriving (Eq, Ord, Show)
+
+bucketTypeList :: (MonadShell m, MonadThrow m) => m [(BucketType, Active)]
 bucketTypeList = do
   output <- shell "riak-admin bucket-type list"
   mapM parseOutput (Text.lines output)
  where
-  parseOutput :: MonadThrow m => Text -> m (BucketType, Bool)
+  parseOutput :: MonadThrow m => Text -> m (BucketType, Active)
   parseOutput output =
     case runParser parser "riak-admin bucket-type list" output of
       Left err -> throw err
       Right x -> pure x
 
-  parser :: Parser (BucketType, Bool)
+  parser :: Parser (BucketType, Active)
   parser = do
     typ <- many (satisfy (not . isSpace))
     _ <- spaceChar
     active <-
       between (char '(') (char ')')
-        (True  <$ string "active" <|>
-         False <$ string "not active")
+        (Active    <$ string "active" <|>
+         NotActive <$ string "not active")
     pure (Text.pack typ, active)
 
 bucketTypeCreate

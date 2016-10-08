@@ -141,7 +141,7 @@ listSpec = do
               pure (ExitSuccess, "default (active)", "")
           }
     unShell bucketTypeList dict
-      `shouldBeRight` [("default", True)]
+      `shouldBeRight` [("default", Active)]
 
   it "parses inactive bucket type" $ do
     let dict = ShellDict
@@ -149,7 +149,7 @@ listSpec = do
               pure (ExitSuccess, "default (not active)", "")
           }
     unShell bucketTypeList dict
-      `shouldBeRight` [("default", False)]
+      `shouldBeRight` [("default", NotActive)]
 
   it "parses a list of bucket types" $ do
     let dict = ShellDict
@@ -157,7 +157,7 @@ listSpec = do
               pure (ExitSuccess, "default (active)\nfoobar (not active)", "")
           }
     unShell bucketTypeList dict
-      `shouldBeRight` [("default", True), ("foobar", False)]
+      `shouldBeRight` [("default", Active), ("foobar", NotActive)]
 
   it "parses unicode bucket types" $ do
     let dict = ShellDict
@@ -165,7 +165,7 @@ listSpec = do
               pure (ExitSuccess, "❤✓☀★ (active)", "")
           }
     unShell bucketTypeList dict
-      `shouldBeRight` [("❤✓☀★", True)]
+      `shouldBeRight` [("❤✓☀★", Active)]
 
 shouldBeRight
   :: (Eq a, Show a) => Either SomeException a -> a -> Expectation
